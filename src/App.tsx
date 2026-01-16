@@ -149,7 +149,7 @@ function App() {
             >
               bysquare
             </a>
-            , and{" "}
+             and{" "}
             <a
               href="https://github.com/kewisch/sepa.js"
               className="text-blue-500 hover:underline"
@@ -158,6 +158,9 @@ function App() {
             >
               sepa.js
             </a>
+          </p>
+          <p className="mt-2 text-xs text-gray-400">
+            Use at your own risk. Verify payment details after importing.
           </p>
         </footer>
       </div>
