@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { decode, type DataModel } from "bysquare";
 import { ImageDropZone } from "./components/ImageDropZone";
 import { PaymentInfo } from "./components/PaymentInfo";
+import { SepaExport } from "./components/SepaExport";
 import { useQRScanner } from "./hooks/useQRScanner";
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
     if (qrData) {
       try {
         const decoded = decode(qrData);
+        console.log("Qr data decoded", decoded);
         setPaymentData(decoded);
         setDecodeError(null);
       } catch (err) {
@@ -110,6 +112,10 @@ function App() {
 
           {paymentData && <PaymentInfo data={paymentData} />}
 
+          {paymentData && paymentData.payments[0] && (
+            <SepaExport payment={paymentData.payments[0]} />
+          )}
+
           {qrRawData && !paymentData && !decodeError && (
             <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
               <p className="text-sm text-yellow-700">
@@ -133,8 +139,8 @@ function App() {
               rel="noopener noreferrer"
             >
               jsQR
-            </a>{" "}
-            and{" "}
+            </a>
+            ,{" "}
             <a
               href="https://github.com/xseman/bysquare"
               className="text-blue-500 hover:underline"
@@ -142,6 +148,15 @@ function App() {
               rel="noopener noreferrer"
             >
               bysquare
+            </a>
+            , and{" "}
+            <a
+              href="https://github.com/kewisch/sepa.js"
+              className="text-blue-500 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              sepa.js
             </a>
           </p>
         </footer>
