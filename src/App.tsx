@@ -9,6 +9,7 @@ function App() {
   const [paymentData, setPaymentData] = useState<DataModel | null>(null);
   const [decodeError, setDecodeError] = useState<string | null>(null);
   const [qrRawData, setQrRawData] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   const handleQRResult = useCallback((qrData: string | null) => {
     setQrRawData(qrData);
@@ -31,19 +32,31 @@ function App() {
     }
   }, []);
 
-  const handleImageSelect = useCallback((file: File) => {
-    setPaymentData(null);
-    setDecodeError(null);
-    setQrRawData(null);
-    scanImage(file, handleQRResult);
-  }, [scanImage, handleQRResult]);
+  const handleImageSelect = useCallback(
+    (file: File) => {
+      setPaymentData(null);
+      setDecodeError(null);
+      setQrRawData(null);
+
+      // Create URL for image preview
+      const url = URL.createObjectURL(file);
+      setImageUrl(url);
+
+      scanImage(file, handleQRResult);
+    },
+    [scanImage, handleQRResult]
+  );
 
   const handleReset = useCallback(() => {
     resetScanner();
     setPaymentData(null);
     setDecodeError(null);
     setQrRawData(null);
-  }, [resetScanner]);
+    if (imageUrl) {
+      URL.revokeObjectURL(imageUrl);
+    }
+    setImageUrl(null);
+  }, [resetScanner, imageUrl]);
 
   const error = scanError || decodeError;
 
@@ -60,7 +73,11 @@ function App() {
         </header>
 
         <div className="space-y-6">
-          <ImageDropZone onImageSelect={handleImageSelect} />
+          <ImageDropZone
+            onImageSelect={handleImageSelect}
+            imageUrl={imageUrl}
+            onClear={handleReset}
+          />
 
           {isLoading && (
             <div className="flex items-center justify-center py-8">
@@ -88,26 +105,10 @@ function App() {
                 <p className="font-medium text-red-700">Error</p>
               </div>
               <p className="mt-1 text-sm text-red-600">{error}</p>
-              <button
-                onClick={handleReset}
-                className="mt-3 text-sm font-medium text-red-600 underline hover:text-red-700"
-              >
-                Try another image
-              </button>
             </div>
           )}
 
-          {paymentData && (
-            <>
-              <PaymentInfo data={paymentData} />
-              <button
-                onClick={handleReset}
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50"
-              >
-                Scan another QR code
-              </button>
-            </>
-          )}
+          {paymentData && <PaymentInfo data={paymentData} />}
 
           {qrRawData && !paymentData && !decodeError && (
             <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">

@@ -2,9 +2,15 @@ import { useState, useCallback, useRef } from "react";
 
 interface ImageDropZoneProps {
   onImageSelect: (file: File) => void;
+  imageUrl: string | null;
+  onClear: () => void;
 }
 
-export function ImageDropZone({ onImageSelect }: ImageDropZoneProps) {
+export function ImageDropZone({
+  onImageSelect,
+  imageUrl,
+  onClear,
+}: ImageDropZoneProps) {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -44,6 +50,37 @@ export function ImageDropZone({ onImageSelect }: ImageDropZoneProps) {
   const handleClick = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
+
+  if (imageUrl) {
+    return (
+      <div className="relative overflow-hidden rounded-xl border-2 border-gray-200 bg-white">
+        <img
+          src={imageUrl}
+          alt="Scanned QR code"
+          className="max-h-[400px] w-full object-contain"
+        />
+        <button
+          onClick={onClear}
+          className="absolute right-2 top-2 rounded-full bg-gray-900/70 p-2 text-white transition-colors hover:bg-gray-900"
+          title="Scan another image"
+        >
+          <svg
+            className="h-5 w-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div
