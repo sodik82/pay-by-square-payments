@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Payment } from "bysquare";
-import { DebtorInfoForm, useDebtorInfo } from "./DebtorInfoForm";
+import { DebtorInfoForm } from "./DebtorInfoForm";
+import { useDebtorInfo } from "../hooks/useDebtorInfo";
 import {
   generateSepaXml,
   isDebtorInfoComplete,

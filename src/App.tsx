@@ -67,10 +67,10 @@ function App() {
       <div className="mx-auto max-w-2xl">
         <header className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-gray-900">
-            Pay by Square Scanner
+            PAY by Square Payments
           </h1>
           <p className="mt-2 text-gray-600">
-            Upload an image with a Pay by Square QR code to decode payment info
+            Upload an image with a Pay by Square QR code to decode payment info and (optionally) generate XML import file for your bank
           </p>
         </header>
 
@@ -149,7 +149,7 @@ function App() {
             >
               bysquare
             </a>
-             and{" "}
+             {" "}and{" "}
             <a
               href="https://github.com/kewisch/sepa.js"
               className="text-blue-500 hover:underline"
