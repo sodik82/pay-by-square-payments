@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 
 interface ImageDropZoneProps {
   onImageSelect: (file: File) => void;
@@ -50,6 +50,32 @@ export function ImageDropZone({
   const handleClick = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
+
+  const handlePaste = useCallback(
+    (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      for (const item of items) {
+        if (item.type.startsWith("image/")) {
+          const file = item.getAsFile();
+          if (file) {
+            e.preventDefault();
+            onImageSelect(file);
+            break;
+          }
+        }
+      }
+    },
+    [onImageSelect]
+  );
+
+  useEffect(() => {
+    document.addEventListener("paste", handlePaste);
+    return () => {
+      document.removeEventListener("paste", handlePaste);
+    };
+  }, [handlePaste]);
 
   if (imageUrl) {
     return (
@@ -117,7 +143,9 @@ export function ImageDropZone({
       <p className="text-lg font-medium text-gray-700">
         {isDragging ? "Drop image here" : "Drop QR code image here"}
       </p>
-      <p className="mt-1 text-sm text-gray-500">or click to select a file</p>
+      <p className="mt-1 text-sm text-gray-500">
+        or click to select a file or paste from clipboard
+      </p>
     </div>
   );
 }
